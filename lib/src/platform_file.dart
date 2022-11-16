@@ -1,17 +1,16 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 
 class PlatformFile {
   PlatformFile({
-    String? path,
+    required this.path,
     required this.name,
     required this.size,
     this.bytes,
     this.readStream,
     this.identifier,
-  }) : _path = path;
+  });
 
   factory PlatformFile.fromMap(Map data, {Stream<List<int>>? readStream}) {
     return PlatformFile(
@@ -24,26 +23,7 @@ class PlatformFile {
     );
   }
 
-  /// The absolute path for a cached copy of this file. It can be used to create a
-  /// file instance with a descriptor for the given path.
-  /// ```
-  /// final File myFile = File(platformFile.path);
-  /// ```
-  /// On web this is always `null`. You should access `bytes` property instead.
-  /// Read more about it [here](https://github.com/miguelpruivo/flutter_file_picker/wiki/FAQ)
-  String? _path;
-
-  String? get path {
-    if (kIsWeb) {
-      /// https://github.com/miguelpruivo/flutter_file_picker/issues/751
-      throw '''
-      On web `path` is always `null`,
-      You should access `bytes` property instead,
-      Read more about it [here](https://github.com/miguelpruivo/flutter_file_picker/wiki/FAQ)
-      ''';
-    }
-    return _path;
-  }
+  final String path;
 
   /// File name including its extension.
   final String name;

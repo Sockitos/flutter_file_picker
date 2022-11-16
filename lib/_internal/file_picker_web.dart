@@ -80,7 +80,7 @@ class FilePickerWeb extends FilePicker {
       void addPickedFile(
         File file,
         Uint8List? bytes,
-        String? path,
+        String path,
         Stream<List<int>>? readStream,
       ) {
         pickedFiles.add(PlatformFile(
@@ -100,15 +100,16 @@ class FilePickerWeb extends FilePicker {
       }
 
       for (File file in files) {
+        final path = Url.createObjectUrl(file);
         if (withReadStream) {
-          addPickedFile(file, null, null, _openFileReadStream(file));
+          addPickedFile(file, null, path, _openFileReadStream(file));
           continue;
         }
 
         if (!withData) {
           final FileReader reader = FileReader();
           reader.onLoadEnd.listen((e) {
-            addPickedFile(file, null, reader.result as String?, null);
+            addPickedFile(file, null, path, null);
           });
           reader.readAsDataUrl(file);
           continue;
@@ -116,7 +117,7 @@ class FilePickerWeb extends FilePicker {
 
         final FileReader reader = FileReader();
         reader.onLoadEnd.listen((e) {
-          addPickedFile(file, reader.result as Uint8List?, null, null);
+          addPickedFile(file, reader.result as Uint8List?, path, null);
         });
         reader.readAsArrayBuffer(file);
       }
